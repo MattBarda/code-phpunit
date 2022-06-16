@@ -75,4 +75,12 @@ class Enclosure
     {
         $this->securities->add($security);
     }
+
+    /**
+     * @return Security[]|Collection
+     */
+    public function getSecurities(): Collection
+    {
+        return $this->securities;
+    }
 }
