@@ -3,9 +3,20 @@
 namespace AppBundle\Factory;
 
 use AppBundle\Entity\Dinosaur;
+use AppBundle\Service\DinosaurLengthDeterminator;
 
 class DinosaurFactory
 {
+    /**
+     * @var DinosaurLengthDeterminator
+     */
+    private $lengthDeterminator;
+
+    public function __construct(DinosaurLengthDeterminator $lengthDeterminator)
+    {
+        $this->lengthDeterminator = $lengthDeterminator;
+    }
+
     public function growVelociraptor(int $length)
     {
         return $this->createDinosaur('Velociraptor', true, $length);
@@ -25,26 +36,10 @@ class DinosaurFactory
     public function growFromSpecification(string $specification): Dinosaur
     {
         $codeName = 'InG-' . random_int(1, 99999);
-        $length = random_int(1, Dinosaur::LARGE - 1);
+        $length = $this->lengthDeterminator->getLengthFromSpecification($specification);
         $isCarnivorous = false;
 
-        if(stripos($specification,'large') !== false){
-            $length = random_int(Dinosaur::LARGE, Dinosaur::HUGE - 1);
-        }
-
-        if(stripos($specification,'huge') !== false){
-            $length = random_int(Dinosaur::HUGE, 100);
-        }
-
-        if(stripos($specification,'?') !== false){
-            $length = random_int(Dinosaur::HUGE, 100);
-        }
-
-        if(stripos($specification,'OMG') !== false){
-            $length = random_int(Dinosaur::HUGE, 100);
-        }
-
-        if(stripos($specification,'carnivorous') !== false){
+        if (stripos($specification, 'carnivorous') !== false) {
             $isCarnivorous = true;
         }
 
